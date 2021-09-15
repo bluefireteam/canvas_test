@@ -1,7 +1,10 @@
-library canvas_test_helpers;
-
-/// A Calculator.
-class Calculator {
-  /// Returns [value] plus 1.
-  int addOne(int value) => value + 1;
-}
+export 'src/assertion_mode.dart';
+export 'src/canvas_commands/cliprect_command.dart';
+export 'src/canvas_commands/command.dart';
+export 'src/canvas_commands/image_command.dart';
+export 'src/canvas_commands/line_command.dart';
+export 'src/canvas_commands/paragraph_command.dart';
+export 'src/canvas_commands/rect_command.dart';
+export 'src/canvas_commands/rrect_command.dart';
+export 'src/canvas_commands/transform_command.dart';
+export 'src/mock_canvas.dart';
