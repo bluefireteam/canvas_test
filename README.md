@@ -1,6 +1,6 @@
 # Canvas test helpers
 
-[MockCanvas] is a utility class for writing tests. It supports the same API
+[MockCanvas] is a utility class for writing tests for canvas operations. It supports the same API
 as the regular [Canvas] class from dart:ui (in theory; any missing commands
 can be added as the need arises). In addition, this class is also a
 [Matcher], allowing it to be used in `expect()` calls as can be seen in the
