@@ -1,4 +1,4 @@
-name: canvas_test_helpers
+name: canvas_test
 
 on: [pull_request, push]
 
