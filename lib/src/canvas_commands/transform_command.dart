@@ -6,26 +6,31 @@ import 'command.dart';
 /// `canvas.translate()`, `canvas.rotate()`, `canvas.scale()`, or
 /// `canvas.transform()`.
 class TransformCommand extends CanvasCommand {
-  TransformCommand() : _transform = Matrix4.identity();
+  final Matrix4 matrix;
 
-  final Matrix4 _transform;
+  TransformCommand() : matrix = Matrix4.identity();
+  TransformCommand.from(this.matrix);
 
-  void transform(Float64List matrix) {
-    _transform.multiply(Matrix4.fromFloat64List(matrix));
+  void setFrom(Matrix4 matrix) {
+    this.matrix.setFrom(matrix);
   }
 
-  void translate(double dx, double dy) => _transform.translate(dx, dy);
-  void rotate(double angle) => _transform.rotateZ(angle);
-  void scale(double sx, double sy) => _transform.scale(sx, sy, 1);
+  void transform(Float64List matrix) {
+    this.matrix.multiply(Matrix4.fromFloat64List(matrix));
+  }
+
+  void translate(double dx, double dy) => matrix.translate(dx, dy);
+  void rotate(double angle) => matrix.rotateZ(angle);
+  void scale(double sx, double sy) => matrix.scale(sx, sy, 1);
 
   @override
   bool equals(TransformCommand other) {
-    return eq(_transform.storage, other._transform.storage);
+    return eq(matrix.storage, other.matrix.storage);
   }
 
   @override
   String toString() {
-    final content = _transform.storage.map(repr).join(', ');
+    final content = matrix.storage.map(repr).join(', ');
     return 'transform($content)';
   }
 }

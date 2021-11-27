@@ -4,6 +4,7 @@ import 'dart:ui';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:test/fake.dart';
+import 'package:vector_math/vector_math_64.dart';
 
 import 'assertion_mode.dart';
 import 'canvas_commands/cliprect_command.dart';
@@ -50,11 +51,14 @@ import 'canvas_commands/transform_command.dart';
 class MockCanvas extends Fake implements Canvas, Matcher {
   MockCanvas({this.mode = AssertionMode.matchExactly})
       : _commands = [],
+        _saveStack = [],
         _saveCount = 0;
 
   final AssertionMode mode;
   final List<CanvasCommand> _commands;
+
   int _saveCount;
+  final List<Matrix4> _saveStack;
 
   /// The absolute tolerance used when comparing numeric quantities for
   /// equality. Two numeric variables `x` and `y` are considered equal if they
@@ -78,7 +82,7 @@ class MockCanvas extends Fake implements Canvas, Matcher {
 
   @override
   Description describe(Description description) {
-    description.add('Canvas$_commands');
+    description.add('Canvas {\n${_commands.join('\n')}\n}');
     return description;
   }
 
@@ -100,7 +104,7 @@ class MockCanvas extends Fake implements Canvas, Matcher {
     final n2 = other._commands.length;
     if (n1 != n2) {
       return _fail(
-        'Canvas contains $n1 commands, but $n2 expected',
+        'Canvas contains $n2 commands, but $n1 expected',
         matchState,
       );
     }
@@ -146,8 +150,8 @@ class MockCanvas extends Fake implements Canvas, Matcher {
       });
       if (idx == -1) {
         return _fail(
-          'Expected canvas command not found: $expectedCommand. '
-          'Actual commands: $_commands',
+          'Expected canvas command not found: $expectedCommand}. '
+          'Actual commands:\n${_commands.join('\n')}',
           matchState,
         );
       } else {
@@ -221,17 +225,35 @@ class MockCanvas extends Fake implements Canvas, Matcher {
   int getSaveCount() => _saveCount;
 
   @override
-  void restore() => _saveCount--;
+  void restore() {
+    _saveCount--;
+    final savedTransform = _saveStack.removeLast();
+    if (savedTransform == _currentTransform.matrix) {
+      return;
+    }
+    _lastTransform.setFrom(savedTransform);
+  }
 
   @override
-  void save() => _saveCount++;
+  void save() {
+    _saveCount++;
+    _saveStack.add(_currentTransform.matrix.clone());
+  }
 
   //#endregion
 
   //#region Private helpers
 
+  TransformCommand get _currentTransform {
+    final transforms = _commands.whereType<TransformCommand>();
+    return transforms.isEmpty ? TransformCommand() : transforms.last;
+  }
+
+  bool get _isLastCommandTransform =>
+      _commands.isNotEmpty && _commands.last is TransformCommand;
+
   TransformCommand get _lastTransform {
-    if (_commands.isNotEmpty && _commands.last is TransformCommand) {
+    if (_isLastCommandTransform) {
       return _commands.last as TransformCommand;
     }
     final transform2d = TransformCommand();
