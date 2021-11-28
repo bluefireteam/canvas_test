@@ -50,15 +50,15 @@ import 'canvas_commands/transform_command.dart';
 /// 1e-10.
 class MockCanvas extends Fake implements Canvas, Matcher {
   MockCanvas({this.mode = AssertionMode.matchExactly})
-      : _commands = [],
-        _saveStack = [],
-        _saveCount = 0;
+      : commands = [],
+        saveStack = [],
+        saveCount = 0;
 
   final AssertionMode mode;
-  final List<CanvasCommand> _commands;
+  final List<CanvasCommand> commands;
 
-  int _saveCount;
-  final List<Matrix4> _saveStack;
+  int saveCount;
+  final List<Matrix4> saveStack;
 
   /// The absolute tolerance used when comparing numeric quantities for
   /// equality. Two numeric variables `x` and `y` are considered equal if they
@@ -82,7 +82,7 @@ class MockCanvas extends Fake implements Canvas, Matcher {
 
   @override
   Description describe(Description description) {
-    description.add('Canvas {\n${_commands.join('\n')}\n}');
+    description.add('Canvas {\n${commands.join('\n')}\n}');
     return description;
   }
 
@@ -97,11 +97,11 @@ class MockCanvas extends Fake implements Canvas, Matcher {
   }
 
   bool matchExactly(covariant MockCanvas other, Map matchState) {
-    if (_saveCount != 0) {
-      return _fail('Canvas finished with saveCount=$_saveCount', matchState);
+    if (saveCount != 0) {
+      return _fail('Canvas finished with saveCount=$saveCount', matchState);
     }
-    final n1 = _commands.length;
-    final n2 = other._commands.length;
+    final n1 = commands.length;
+    final n2 = other.commands.length;
     if (n1 != n2) {
       return _fail(
         'Canvas contains $n2 commands, but $n1 expected',
@@ -110,8 +110,8 @@ class MockCanvas extends Fake implements Canvas, Matcher {
     }
     final useTolerance = max(tolerance, other.tolerance);
     for (var i = 0; i < n1; i++) {
-      final cmd1 = _commands[i];
-      final cmd2 = other._commands[i];
+      final cmd1 = commands[i];
+      final cmd2 = other.commands[i];
       if (cmd1.runtimeType != cmd2.runtimeType) {
         return _fail(
           'Mismatched canvas commands at index $i: the actual '
@@ -134,12 +134,12 @@ class MockCanvas extends Fake implements Canvas, Matcher {
   }
 
   bool containsAnyOrder(covariant MockCanvas other, Map matchState) {
-    if (_saveCount != 0) {
-      return _fail('Canvas finished with saveCount=$_saveCount', matchState);
+    if (saveCount != 0) {
+      return _fail('Canvas finished with saveCount=$saveCount', matchState);
     }
     final useTolerance = max(tolerance, other.tolerance);
-    final remainingActualCommands = other._commands.toList();
-    for (final expectedCommand in _commands) {
+    final remainingActualCommands = other.commands.toList();
+    for (final expectedCommand in commands) {
       final idx = remainingActualCommands.indexWhere((cmd) {
         if (expectedCommand.runtimeType != cmd.runtimeType) {
           return false;
@@ -151,7 +151,7 @@ class MockCanvas extends Fake implements Canvas, Matcher {
       if (idx == -1) {
         return _fail(
           'Expected canvas command not found: $expectedCommand}. '
-          'Actual commands:\n${_commands.join('\n')}',
+          'Actual commands:\n${commands.join('\n')}',
           matchState,
         );
       } else {
@@ -192,42 +192,42 @@ class MockCanvas extends Fake implements Canvas, Matcher {
     ClipOp clipOp = ClipOp.intersect,
     bool doAntiAlias = true,
   }) {
-    _commands.add(ClipRectCommand(rect, clipOp, doAntiAlias));
+    commands.add(ClipRectCommand(rect, clipOp, doAntiAlias));
   }
 
   @override
   void drawRect(Rect rect, [Paint? paint]) {
-    _commands.add(RectCommand(rect, paint));
+    commands.add(RectCommand(rect, paint));
   }
 
   @override
   void drawRRect(RRect rrect, [Paint? paint]) {
-    _commands.add(RRectCommand(rrect, paint));
+    commands.add(RRectCommand(rrect, paint));
   }
 
   @override
   void drawLine(Offset p1, Offset p2, [Paint? paint]) {
-    _commands.add(LineCommand(p1, p2, paint));
+    commands.add(LineCommand(p1, p2, paint));
   }
 
   @override
   void drawParagraph(Paragraph? paragraph, Offset offset) {
-    _commands.add(ParagraphCommand(offset));
+    commands.add(ParagraphCommand(offset));
   }
 
   @override
   void drawImage(Image? image, Offset offset, [Paint? paint]) {
     // don't compare the actual images as that would be slow, brittle and hard to test
-    _commands.add(ImageCommand(offset, paint));
+    commands.add(ImageCommand(offset, paint));
   }
 
   @override
-  int getSaveCount() => _saveCount;
+  int getSaveCount() => saveCount;
 
   @override
   void restore() {
-    _saveCount--;
-    final savedTransform = _saveStack.removeLast();
+    saveCount--;
+    final savedTransform = saveStack.removeLast();
     if (savedTransform == _currentTransform.matrix) {
       return;
     }
@@ -236,8 +236,8 @@ class MockCanvas extends Fake implements Canvas, Matcher {
 
   @override
   void save() {
-    _saveCount++;
-    _saveStack.add(_currentTransform.matrix.clone());
+    saveCount++;
+    saveStack.add(_currentTransform.matrix.clone());
   }
 
   //#endregion
@@ -245,19 +245,19 @@ class MockCanvas extends Fake implements Canvas, Matcher {
   //#region Private helpers
 
   TransformCommand get _currentTransform {
-    final transforms = _commands.whereType<TransformCommand>();
+    final transforms = commands.whereType<TransformCommand>();
     return transforms.isEmpty ? TransformCommand() : transforms.last;
   }
 
   bool get _isLastCommandTransform =>
-      _commands.isNotEmpty && _commands.last is TransformCommand;
+      commands.isNotEmpty && commands.last is TransformCommand;
 
   TransformCommand get _lastTransform {
     if (_isLastCommandTransform) {
-      return _commands.last as TransformCommand;
+      return commands.last as TransformCommand;
     }
     final transform2d = TransformCommand();
-    _commands.add(transform2d);
+    commands.add(transform2d);
     return transform2d;
   }
 

@@ -17,6 +17,17 @@ import '../mock_canvas.dart';
 abstract class CanvasCommand {
   double tolerance = 1e-10;
 
+  @override
+  bool operator ==(Object other) {
+    if (other is! CanvasCommand) {
+      return false;
+    }
+    return equals(other);
+  }
+
+  @override
+  int get hashCode => toString().hashCode;
+
   /// Return true if this command is equal to [other], up to the
   /// given absolute [tolerance]. The argument [other] is guaranteed
   /// to have the same type as the current command.
