@@ -7,8 +7,8 @@ import 'package:test/fake.dart';
 import 'package:vector_math/vector_math_64.dart';
 
 import 'assertion_mode.dart';
+import 'canvas_commands/canvas_command.dart';
 import 'canvas_commands/cliprect_command.dart';
-import 'canvas_commands/command.dart';
 import 'canvas_commands/image_command.dart';
 import 'canvas_commands/line_command.dart';
 import 'canvas_commands/paragraph_command.dart';

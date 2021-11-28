@@ -8,7 +8,7 @@ void main() {
     test('drawRect', () {
       final canvas = MockCanvas();
       canvas.drawRect(const Rect.fromLTWH(0, 0, 100, 100), Paint());
-      expect(
+      expectCommand(
         canvas.commands.single,
         RectCommand(const Rect.fromLTWH(0, 0, 100, 100), Paint()),
       );
@@ -23,7 +23,7 @@ void main() {
         RRect.fromRectXY(const Rect.fromLTWH(0, 0, 100, 100), 10, 10),
         Paint(),
       );
-      expect(
+      expectCommand(
         canvas.commands.single,
         RRectCommand(
           RRect.fromRectXY(const Rect.fromLTWH(0, 0, 100, 100), 10, 10),
@@ -36,4 +36,8 @@ void main() {
       );
     });
   });
+}
+
+void expectCommand(CanvasCommand actual, CanvasCommand expected) {
+  expect(actual.equals(expected), true);
 }
