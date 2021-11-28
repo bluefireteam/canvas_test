@@ -13,7 +13,7 @@ dependencies:
     sdk: flutter
 
 dev_dependencies:
-  flutter_lints: ^1.0.4
+  flame_lint: ^0.0.1
   flutter_test:
     sdk: flutter
   test: ^1.17.10
