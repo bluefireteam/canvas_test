@@ -2,7 +2,7 @@
 
 <p align="center">
   <a title="Pub" href="https://pub.dev/packages/canvas_test"><img src="https://img.shields.io/pub/v/canvas_test.svg?style=popout" /></a>
-  <img src="https://github.com/bluefireteam/canvas_test/workflows/ci-cd/badge.svg?branch=main&event=push" alt="Test" />
+  <img src="https://github.com/bluefireteam/canvas_test/workflows/cicd/badge.svg?branch=main&event=push" alt="Test" />
   <a title="Discord" href="https://discord.gg/pxrBmy4" ><img src="https://img.shields.io/discord/509714518008528896.svg" /></a>
 </p>
 

@@ -1,6 +1,6 @@
 name: canvas_test
 description: A package with classes to help testing applications using the canvas
-version: 0.1.1
+version: 0.2.0
 homepage: https://github.com/bluefireteam/canvas_test
 
 environment:
