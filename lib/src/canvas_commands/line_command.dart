@@ -1,5 +1,5 @@
 import 'dart:ui';
-import 'command.dart';
+import 'canvas_command.dart';
 
 /// canvas.drawLine()
 class LineCommand extends CanvasCommand {

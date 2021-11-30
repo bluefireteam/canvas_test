@@ -1,6 +1,6 @@
 export 'src/assertion_mode.dart';
+export 'src/canvas_commands/canvas_command.dart';
 export 'src/canvas_commands/cliprect_command.dart';
-export 'src/canvas_commands/command.dart';
 export 'src/canvas_commands/image_command.dart';
 export 'src/canvas_commands/line_command.dart';
 export 'src/canvas_commands/paragraph_command.dart';

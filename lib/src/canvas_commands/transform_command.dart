@@ -1,6 +1,6 @@
 import 'dart:typed_data';
 import 'package:vector_math/vector_math_64.dart';
-import 'command.dart';
+import 'canvas_command.dart';
 
 /// This canvas command describes either a single or multiple method calls
 /// `canvas.translate()`, `canvas.rotate()`, `canvas.scale()`, or
